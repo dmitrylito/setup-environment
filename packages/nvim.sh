@@ -41,7 +41,7 @@ echo "Installing Neovim ${NVIM_VERSION} (AppImage)..."
 
 # 1. Download
 # Note: We use the specific tag v0.11.5
-curl -LO "https://github.com/neovim/neovim/releases/download/${NVIM_VERSION}/nvim.appimage"
+curl -LO "https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage"
 chmod u+x nvim.appimage
 
 # 2. Extract
