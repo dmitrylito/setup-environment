@@ -2,8 +2,8 @@
 
 set -xe
 
-# Set to "stable" to always get the latest release (currently > 0.10.2)
-NVIM_VERSION=stable
+# CHANGE: Set to "nightly" to get v0.11.0+ (The bleeding edge version)
+NVIM_VERSION=nightly
 
 # Check if I'm connected as root user. If not, exit.
 if [ "$(id -u)" != "0" ]; then
@@ -37,16 +37,18 @@ rm lazygit.tar.gz lazygit
 
 # 1. ARM / AARCH64 (Build from source)
 if [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "arm" ]; then
-  echo "Detected ARM architecture. Building from source..."
+  echo "Detected ARM architecture. Building from source (Nightly)..."
 
   # Install build prerequisites
   apt-get install -y ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip curl doxygen
 
   # Clone and build
-  rm -rf neovim # Clean previous builds if any
+  rm -rf neovim
   git clone https://github.com/neovim/neovim.git
   cd neovim
-  git checkout ${NVIM_VERSION}
+  # For source builds, the latest code is on 'master'.
+  # The 'nightly' tag exists but master is safer for source builds.
+  git checkout master
   make CMAKE_BUILD_TYPE=RelWithDebInfo
   make install
   cd -
@@ -54,22 +56,22 @@ if [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "arm" ]; then
 
 # 2. X86_64 (AppImage)
 else
-  echo "Detected x86_64 architecture. Installing via AppImage..."
+  echo "Detected x86_64 architecture. Installing Nightly AppImage..."
 
-  # Download the release defined by NVIM_VERSION (stable)
-  curl -LO "https://github.com/neovim/neovim/releases/download/${NVIM_VERSION}/nvim.appimage"
+  # Download Nightly
+  # Note: Nightly releases are hosted at the 'nightly' tag URL
+  curl -LO "https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage"
   chmod u+x nvim.appimage
 
   # Extract
   ./nvim.appimage --appimage-extract
 
-  # Verify it runs
+  # Verify it runs (Should say v0.11.x)
   ./squashfs-root/AppRun --version
 
   rm nvim.appimage
 
   # Exposing nvim globally
-  # Remove existing installation to avoid conflicts
   rm -rf /squashfs-root
   mv squashfs-root /
 
