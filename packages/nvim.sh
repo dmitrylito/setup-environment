@@ -5,7 +5,7 @@ set -xe
 # ----------------------------------------------------------------
 # TARGET VERSION: v0.11.5
 # ----------------------------------------------------------------
-NVIM_VERSION=v0.11.5
+NVIM_VERSION=nightly
 
 # Check if I'm connected as root user. If not, exit.
 if [ "$(id -u)" != "0" ]; then
